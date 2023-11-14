@@ -1,36 +1,63 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class CameraController : MonoBehaviour
 {
 
     [SerializeField]
-    public int cameraSpeed = 10;
+    public float cameraSpeed = 10f;
+    public float scrollSpeed = 10f;
+    public Camera camera;
+
+    private Vector3 cameraPanStartPos;
+    [SerializeField]
+    private Vector3 difference;
+
+    private bool drag = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
+    void handleZoom()
+    {
+        if(Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            camera.orthographicSize += (3f * Time.deltaTime) * scrollSpeed;
+        }
 
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            camera.orthographicSize -= (3f * Time.deltaTime) * scrollSpeed;
+
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(KeyCode.W))
+        handleZoom();
+        if (Input.GetMouseButton(0) )
         {
-            gameObject.transform.Translate(Vector2.up * Time.deltaTime * cameraSpeed);
+            if (!drag)
+            {
+                cameraPanStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                drag = true;
+            }
         }
-        if (Input.GetKey(KeyCode.S))
+        else
         {
-            gameObject.transform.Translate(Vector2.down * Time.deltaTime * cameraSpeed);
+            drag = false;
         }
-        if(Input.GetKey(KeyCode.D))
+
+        if (drag)
         {
-            gameObject.transform.Translate(Vector2.right * Time.deltaTime * cameraSpeed);
+            difference = cameraPanStartPos - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Camera.main.transform.Translate(difference);
         }
-        if( Input.GetKey(KeyCode.A))
-        {
-            gameObject.transform.Translate(Vector2.left * Time.deltaTime * cameraSpeed);
-        }
+
+        
     }
 }
