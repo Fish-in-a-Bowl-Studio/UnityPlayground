@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClickEvent : MonoBehaviour
+public class EventManager : MonoBehaviour
 {
+
+    public delegate void ChickenEvent();
+    public static event ChickenEvent OnChickenKilled;
+
+
     // Start is called before the first frame update
     void Start()
     {
